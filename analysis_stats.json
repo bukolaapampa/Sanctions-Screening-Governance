@@ -1,0 +1,306 @@
+{
+  "regimes": {
+    "OFAC SDN": {
+      "code": "us_ofac_sdn",
+      "issuer": "US Treasury / OFAC",
+      "juris": "United States",
+      "targets": 19678,
+      "entities_total": 70341,
+      "searchable": 37271,
+      "persons": 7449,
+      "orgs": 9612,
+      "vessels": 1477,
+      "crypto": 789,
+      "aircraft": 344,
+      "securities": 7,
+      "countries": 190,
+      "programs": 34,
+      "cadence_h": 2,
+      "version": "20260517021001-nwr",
+      "last_processed": "2026-05-17",
+      "last_change": "2026-05-11",
+      "added": "2015-12-05"
+    },
+    "EU FSF": {
+      "code": "eu_fsf",
+      "issuer": "European Commission / DG FISMA",
+      "juris": "European Union",
+      "targets": 5900,
+      "entities_total": 15164,
+      "searchable": 7815,
+      "persons": 4357,
+      "orgs": 1541,
+      "vessels": 2,
+      "crypto": 0,
+      "aircraft": 0,
+      "securities": 0,
+      "countries": 114,
+      "programs": 41,
+      "cadence_h": 2,
+      "version": "20260523145701-mgw",
+      "last_processed": "2026-05-23",
+      "last_change": "2026-05-15",
+      "added": "2021-01-24"
+    },
+    "UK FCDO": {
+      "code": "gb_fcdo_sanctions",
+      "issuer": "UK FCDO / OFSI",
+      "juris": "United Kingdom",
+      "targets": 5986,
+      "entities_total": 17718,
+      "searchable": 6657,
+      "persons": 3844,
+      "orgs": 2181,
+      "vessels": 632,
+      "crypto": 0,
+      "aircraft": 0,
+      "securities": 0,
+      "countries": 140,
+      "programs": 31,
+      "cadence_h": 2,
+      "version": "20260319084002-ilx",
+      "last_processed": "2026-03-19",
+      "last_change": "2026-03-18",
+      "added": "2024-05-09"
+    },
+    "UN SC": {
+      "code": "un_sc_sanctions",
+      "issuer": "UN Security Council",
+      "juris": "Global",
+      "targets": 999,
+      "entities_total": 2887,
+      "searchable": 1401,
+      "persons": 732,
+      "orgs": 267,
+      "vessels": 0,
+      "crypto": 0,
+      "aircraft": 0,
+      "securities": 0,
+      "countries": 76,
+      "programs": 14,
+      "cadence_h": 4,
+      "version": "20260413040101-mte",
+      "last_processed": "2026-04-13",
+      "last_change": "2026-03-31",
+      "added": "2015-12-05"
+    }
+  },
+  "collection": {
+    "name": "OpenSanctions Consolidated Sanctions",
+    "total_entities": 281414,
+    "searchable": 98718,
+    "targets": 69951,
+    "sources": 85,
+    "countries": 212,
+    "version": "20260517074701-kjc",
+    "last_processed": "2026-05-17"
+  },
+  "lists": [
+    "OFAC SDN",
+    "EU FSF",
+    "UK FCDO",
+    "UN SC"
+  ],
+  "raw_records": 32563,
+  "unique_targets": 24183,
+  "unique_persons": 12072,
+  "single_only": 18743,
+  "single_share": 77.5,
+  "multi": 5440,
+  "multi_share": 22.5,
+  "single_list_miss": {
+    "OFAC SDN": 18.6,
+    "EU FSF": 75.6,
+    "UK FCDO": 75.2,
+    "UN SC": 95.9
+  },
+  "best_single_list": "OFAC SDN",
+  "best_gap": 18.6,
+  "pairwise": {
+    "OFAC SDN + EU FSF": {
+      "both": 3135,
+      "jaccard_pct": 14.0
+    },
+    "OFAC SDN + UK FCDO": {
+      "both": 3085,
+      "jaccard_pct": 13.7
+    },
+    "OFAC SDN + UN SC": {
+      "both": 760,
+      "jaccard_pct": 3.8
+    },
+    "EU FSF + UK FCDO": {
+      "both": 3420,
+      "jaccard_pct": 40.4
+    },
+    "EU FSF + UN SC": {
+      "both": 785,
+      "jaccard_pct": 12.8
+    },
+    "UK FCDO + UN SC": {
+      "both": 785,
+      "jaccard_pct": 12.7
+    }
+  },
+  "unique_contrib": {
+    "OFAC SDN": 15568,
+    "EU FSF": 1465,
+    "UK FCDO": 1601,
+    "UN SC": 109
+  },
+  "dq_rate": 12.0,
+  "dq_breakdown": {
+    "dq_missing_dob": 680,
+    "dq_name_translit": 790,
+    "dq_mononym": 237,
+    "dq_cross_source_conflict": 1240,
+    "dq_stale": 108
+  },
+  "dq_breakdown_pct": {
+    "dq_missing_dob": 2.8,
+    "dq_name_translit": 3.3,
+    "dq_mononym": 1.0,
+    "dq_cross_source_conflict": 5.1,
+    "dq_stale": 0.4
+  },
+  "schema_mix": {
+    "Person": 12072,
+    "Organization": 9573,
+    "Vessel": 1507,
+    "CryptoWallet": 702,
+    "Aircraft": 322,
+    "Security": 7
+  },
+  "typo_mix": {
+    "Russia/Ukraine": 6289,
+    "Narcotics/TCO/Trafficking": 4431,
+    "Other regional": 3611,
+    "Counter-terrorism": 3542,
+    "Iran/DPRK proliferation": 2689,
+    "Human rights/Corruption": 2399,
+    "Cyber": 1222
+  },
+  "country_mix": {
+    "Russia": 7300,
+    "Other": 2232,
+    "Iran": 2229,
+    "Ukraine": 1307,
+    "Syria": 1303,
+    "China": 1259,
+    "North Korea": 968,
+    "Belarus": 946,
+    "Afghanistan": 803,
+    "Libya": 793,
+    "Venezuela": 790,
+    "Iraq": 786
+  },
+  "listcount_mix": {
+    "1": 18743,
+    "2": 3150,
+    "3": 1640,
+    "4": 650
+  },
+  "year_totals": {
+    "2018": 1817,
+    "2019": 1841,
+    "2020": 1976,
+    "2021": 2200,
+    "2022": 3543,
+    "2023": 3569,
+    "2024": 3734,
+    "2025": 3486,
+    "2026": 2017
+  },
+  "velocity": {
+    "2018": {
+      "Counter-terrorism": 545,
+      "Cyber": 22,
+      "Human rights/Corruption": 150,
+      "Iran/DPRK proliferation": 303,
+      "Narcotics/TCO/Trafficking": 201,
+      "Other regional": 492,
+      "Russia/Ukraine": 104
+    },
+    "2019": {
+      "Counter-terrorism": 502,
+      "Cyber": 30,
+      "Human rights/Corruption": 142,
+      "Iran/DPRK proliferation": 281,
+      "Narcotics/TCO/Trafficking": 271,
+      "Other regional": 470,
+      "Russia/Ukraine": 145
+    },
+    "2020": {
+      "Counter-terrorism": 487,
+      "Cyber": 43,
+      "Human rights/Corruption": 206,
+      "Iran/DPRK proliferation": 314,
+      "Narcotics/TCO/Trafficking": 317,
+      "Other regional": 488,
+      "Russia/Ukraine": 121
+    },
+    "2021": {
+      "Counter-terrorism": 440,
+      "Cyber": 72,
+      "Human rights/Corruption": 250,
+      "Iran/DPRK proliferation": 361,
+      "Narcotics/TCO/Trafficking": 365,
+      "Other regional": 489,
+      "Russia/Ukraine": 223
+    },
+    "2022": {
+      "Counter-terrorism": 389,
+      "Cyber": 125,
+      "Human rights/Corruption": 344,
+      "Iran/DPRK proliferation": 371,
+      "Narcotics/TCO/Trafficking": 444,
+      "Other regional": 468,
+      "Russia/Ukraine": 1402
+    },
+    "2023": {
+      "Counter-terrorism": 405,
+      "Cyber": 157,
+      "Human rights/Corruption": 337,
+      "Iran/DPRK proliferation": 365,
+      "Narcotics/TCO/Trafficking": 587,
+      "Other regional": 454,
+      "Russia/Ukraine": 1264
+    },
+    "2024": {
+      "Counter-terrorism": 371,
+      "Cyber": 256,
+      "Human rights/Corruption": 399,
+      "Iran/DPRK proliferation": 372,
+      "Narcotics/TCO/Trafficking": 792,
+      "Other regional": 399,
+      "Russia/Ukraine": 1145
+    },
+    "2025": {
+      "Counter-terrorism": 274,
+      "Cyber": 305,
+      "Human rights/Corruption": 361,
+      "Iran/DPRK proliferation": 227,
+      "Narcotics/TCO/Trafficking": 900,
+      "Other regional": 232,
+      "Russia/Ukraine": 1187
+    },
+    "2026": {
+      "Counter-terrorism": 129,
+      "Cyber": 212,
+      "Human rights/Corruption": 210,
+      "Iran/DPRK proliferation": 95,
+      "Narcotics/TCO/Trafficking": 554,
+      "Other regional": 119,
+      "Russia/Ukraine": 698
+    }
+  },
+  "growth_2022_2025": {
+    "Counter-terrorism": 70.0,
+    "Cyber": 244.0,
+    "Human rights/Corruption": 105.0,
+    "Iran/DPRK proliferation": 61.0,
+    "Narcotics/TCO/Trafficking": 203.0,
+    "Other regional": 50.0,
+    "Russia/Ukraine": 85.0
+  }
+}
