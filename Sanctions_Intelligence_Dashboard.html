@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sanctions Intelligence Dashboard — Case Study A</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+<style>
+:root{
+  --ink:#1a2238;--muted:#5a6480;--soft:#7a87a8;--line:#e3e7f0;--bg:#f4f6fc;
+  --panel:#ffffff;--accent:#2a5dd8;--accent2:#5f8af7;--ok:#1b8f5c;--warn:#c9881f;--danger:#b73448;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+.shell{max-width:1180px;margin:0 auto;padding:34px 24px 70px}
+.crumbs{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:1.6px;margin-bottom:8px}
+.title{font-size:27px;font-weight:750;letter-spacing:-0.4px;margin:0 0 6px}
+.sub{font-size:15px;color:var(--muted);max-width:760px;line-height:1.55;margin:0 0 14px}
+.meta{font-size:11.5px;color:var(--soft);display:flex;flex-wrap:wrap;gap:7px 16px;align-items:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:20px}
+.meta b{color:var(--ink);font-weight:600}
+.tag-pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:999px;letter-spacing:.4px;font-weight:600}
+.tag-pill.official{color:var(--ok);background:#eaf6f0;border:1px solid #bde3cf}
+.tag-pill.modelled{color:var(--accent);background:#eef3ff;border:1px solid #cdd9f7}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+.kpi .lab{font-size:10px;color:var(--soft);text-transform:uppercase;letter-spacing:.7px;line-height:1.3}
+.kpi .val{font-size:23px;font-weight:750;margin:7px 0 3px;letter-spacing:-0.5px}
+.kpi .delta{font-size:11px;font-weight:600}
+.kpi .delta.up{color:var(--danger)}
+.kpi .delta.flat{color:var(--muted)}
+.kpi .delta.ok{color:var(--ok)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}
+.card h3{margin:0 0 2px;font-size:14px;font-weight:650}
+.card .h-sub{margin:0 0 10px;font-size:11.5px;color:var(--soft);line-height:1.4}
+.chart-wrap{position:relative;height:230px}
+.chart-wrap.tall{height:300px}
+.findings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.find{border-left:3px solid var(--accent);background:#f7f9ff;border-radius:0 8px 8px 0;padding:10px 12px}
+.find .v{font-size:19px;font-weight:750;letter-spacing:-0.3px}
+.find .h{font-size:12.5px;font-weight:650;margin:1px 0 3px}
+.find .d{font-size:11.5px;color:var(--muted);line-height:1.45}
+.find.warn{border-color:var(--warn);background:#fff9ef}
+.find.danger{border-color:var(--danger);background:#fdf3f4}
+.find.ok{border-color:var(--ok);background:#f0f8f3}
+.legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;font-size:11px;color:var(--muted)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.recs{font-size:12.5px;color:var(--ink);line-height:1.5;margin:0;padding-left:18px}
+.recs li{margin-bottom:6px}
+.footer{font-size:11px;color:var(--soft);margin-top:22px;border-top:1px solid var(--line);padding-top:14px;line-height:1.5}
+.gridjs-wrapper{box-shadow:none!important;border:1px solid var(--line)!important}
+table.gridjs-table{font-size:12px}
+.gridjs-th{background:#f4f6fc!important;font-size:10.5px!important;text-transform:uppercase;letter-spacing:.4px}
+@media (max-width:980px){.kpis{grid-template-columns:repeat(3,1fr)}.span-8,.span-6,.span-4{grid-column:span 12}}
+@media (max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}.findings{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="crumbs">Case Study A · Multi-Jurisdiction Sanctions Intelligence</div>
+<div class="title">Sanctions Intelligence Dashboard</div>
+<p class="sub">Cross-list coverage, screening consistency and data-quality risk across the four primary sanctions regimes — OFAC SDN, EU FSF, UK Sanctions List and the UN Security Council Consolidated List — consolidated through the OpenSanctions catalogue.</p>
+<div class="meta">
+  <span><b>Author:</b> Bukola Apampa · Financial Intelligence Research Analyst</span>
+  <span><b>Source:</b> OpenSanctions v.20260517074701-kjc</span>
+  <span class="tag-pill official">live counts</span>
+  <span class="tag-pill modelled">modelled resolution</span>
+  <span><b>Licence:</b> CC BY-NC 4.0</span>
+</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="lab">Raw designation records</div><div class="val">32,563</div><div class="delta flat">4 regimes, live targets</div></div>
+  <div class="kpi"><div class="lab">Unique targets</div><div class="val">24,183</div><div class="delta up">▲ vs 15,200+ baseline</div></div>
+  <div class="kpi"><div class="lab">Single-list-only</div><div class="val">77.5%</div><div class="delta up">on one list only</div></div>
+  <div class="kpi"><div class="lab">Best single-list gap</div><div class="val">18.6%</div><div class="delta up">missed by OFAC alone</div></div>
+  <div class="kpi"><div class="lab">Data-quality defects</div><div class="val">12.0%</div><div class="delta up">≥1 material defect</div></div>
+  <div class="kpi"><div class="lab">Cyber growth 22→25</div><div class="val">+144%</div><div class="delta up">fastest typology</div></div>
+</div>
+
+<div class="grid">
+  <div class="card span-8">
+    <h3>Designation velocity by typology</h3>
+    <p class="h-sub">Additions per year. Cyber and trafficking/TCO show the steepest recent slope; Russia/Ukraine peaked in 2022. 2026 is year-to-date. Modelled trend, calibrated to live programme composition.</p>
+    <div class="chart-wrap tall"><canvas id="cVelocity"></canvas></div>
+  </div>
+  <div class="card span-4">
+    <h3>Coverage by list count</h3>
+    <p class="h-sub">How many of the four lists carry each target.</p>
+    <div class="chart-wrap tall"><canvas id="cListCount"></canvas></div>
+  </div>
+
+  <div class="card span-6">
+    <h3>Regime size — designated targets</h3>
+    <p class="h-sub">OFAC SDN alone exceeds the other three combined.</p>
+    <div class="chart-wrap"><canvas id="cRegime"></canvas></div>
+  </div>
+  <div class="card span-6">
+    <h3>Single-list miss profile</h3>
+    <p class="h-sub">Share of the 24,183-target universe missed if you screen that list alone.</p>
+    <div class="chart-wrap"><canvas id="cMiss"></canvas></div>
+  </div>
+
+  <div class="card span-6">
+    <h3>Typology — growth index (2022 = 100)</h3>
+    <p class="h-sub">Fastest-moving programmes between 2022 and 2025.</p>
+    <div class="chart-wrap"><canvas id="cGrowth"></canvas></div>
+  </div>
+  <div class="card span-6">
+    <h3>Data-quality defect breakdown</h3>
+    <p class="h-sub">Share of all targets carrying each defect (12.0% carry ≥1).</p>
+    <div class="chart-wrap"><canvas id="cDQ"></canvas></div>
+  </div>
+
+  <div class="card span-6">
+    <h3>Top jurisdictions of risk</h3>
+    <p class="h-sub">Designated targets by nationality / jurisdiction.</p>
+    <div class="chart-wrap"><canvas id="cCountry"></canvas></div>
+  </div>
+  <div class="card span-6">
+    <h3>Entity-type mix</h3>
+    <p class="h-sub">Composition of the consolidated unique universe.</p>
+    <div class="chart-wrap"><canvas id="cSchema"></canvas></div>
+  </div>
+
+  <div class="card span-12">
+    <h3>Key findings</h3>
+    <p class="h-sub">The intelligence read across the four regimes.</p>
+    <div class="findings">
+      <div class="find danger"><div class="v">18.6%</div><div class="h">Best-case single-list gap</div><div class="d">Even screening the full OFAC SDN — the largest list — misses ~1 in 5 designations. UN-only screening misses 95.9%.</div></div>
+      <div class="find warn"><div class="v">77.5%</div><div class="h">Single-list-only targets</div><div class="d">Only 22.5% of targets appear on 2+ lists; 650 on all four. Cross-list corroboration cannot gate escalation.</div></div>
+      <div class="find"><div class="v">15,568</div><div class="h">OFAC unique contribution</div><div class="d">OFAC SDN carries the overwhelming majority of unique designations; EU +1,465, UK +1,601, UN +109.</div></div>
+      <div class="find ok"><div class="v">40.4%</div><div class="h">Tightest list pairing (EU∩UK)</div><div class="d">The two Western regimes co-list heavily on Russia/Ukraine. OFAC∩UN is just 3.8%.</div></div>
+      <div class="find warn"><div class="v">12.0%</div><div class="h">Data-quality defect rate</div><div class="d">Cross-source conflicts (5.1%) and transliteration risk (3.3%) lead — concentrated on Russia/Iran/DPRK names.</div></div>
+      <div class="find danger"><div class="v">+144%</div><div class="h">Cyber designation growth</div><div class="d">Cyber and trafficking/TCO (+103%) grow fastest and decay fastest — worst-served by static single-list screening.</div></div>
+    </div>
+  </div>
+
+  <div class="card span-12">
+    <h3>Regime register — live statistics</h3>
+    <p class="h-sub">Version-pinned per-regime figures sourced from OpenSanctions, May 2026. Every row is independently citable.</p>
+    <div id="regimeTable"></div>
+  </div>
+
+  <div class="card span-12">
+    <h3>Operational recommendations</h3>
+    <ol class="recs">
+      <li><b>Multi-source by default.</b> No single list covers &gt;81% of the universe; build the screening set from all four regimes.</li>
+      <li><b>Tier by marginal contribution.</b> OFAC SDN as spine, EU+UK for Russia/Ukraine, UN for legal baseline — not equal weight.</li>
+      <li><b>Transliteration-aware matching.</b> Apply Cyrillic/Arabic/Farsi/Han romanisation rules where false negatives are manufactured.</li>
+      <li><b>Cross-source conflict rules.</b> Define attribute precedence so the same subject is adjudicated identically regardless of source.</li>
+      <li><b>Pin the version string.</b> Store the OpenSanctions version (e.g. 20260517074701-kjc) with every alert disposition for replayable audit.</li>
+      <li><b>Cadence to velocity.</b> Tighten refresh on cyber and trafficking programmes; watch the UK feed's longer processing lag.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="footer">
+  Underlying data © OpenSanctions Datenbanken GmbH, CC BY-NC 4.0 · sources: us_ofac_sdn, eu_fsf, gb_fcdo_sanctions, un_sc_sanctions.
+  Headline regime counts, cadence and version strings are live and citable; cross-list resolution, data-quality incidence and velocity are modelled planning estimates calibrated to the live marginals.
+  Reproducible pipeline: build_case_study_a.py · resolved dataset: consolidated_sanctions_4regime.csv · narrative: Sanctions_Intelligence_Report.html. Prepared as Case Study A — Multi-Jurisdiction Sanctions Intelligence.
+</div>
+</div>
+
+<script>
+Chart.defaults.font.family = "Inter, system-ui, sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = "#5a6480";
+Chart.defaults.plugins.legend.labels.boxWidth = 10;
+Chart.defaults.plugins.legend.labels.boxHeight = 10;
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+
+var ACC="#2a5dd8", ACC2="#5f8af7", OK="#1b8f5c", WARN="#c9881f", DANGER="#b73448";
+var PALETTE=["#b73448","#c9881f","#2a5dd8","#1b8f5c","#7a5cc0","#d96b7b","#7a87a8"];
+var f0=function(v){return v.toLocaleString();};
+
+// 1. Velocity line ---------------------------------------------------------
+var years=[2018,2019,2020,2021,2022,2023,2024,2025,2026];
+var velo={
+ "Cyber":[22,30,43,72,125,157,256,305,212],
+ "Narcotics / TCO / Trafficking":[201,271,317,365,444,587,792,900,554],
+ "Russia / Ukraine":[104,145,121,223,1402,1264,1145,1187,698],
+ "Counter-terrorism":[545,502,487,440,389,405,371,274,129],
+ "Iran / DPRK proliferation":[303,281,314,361,371,365,372,227,95],
+ "Human rights / Corruption":[150,142,206,250,344,337,399,361,210],
+ "Other regional":[492,470,488,489,468,454,399,232,119]
+};
+var vkeys=Object.keys(velo);
+new Chart(document.getElementById("cVelocity"),{
+ type:"line",
+ data:{labels:years,datasets:vkeys.map(function(k,i){return{
+   label:k,data:velo[k],borderColor:PALETTE[i],backgroundColor:PALETTE[i],
+   borderWidth:k.indexOf("Cyber")>-1||k.indexOf("Narcotics")>-1?2.6:1.6,
+   tension:0.34,pointRadius:0,pointHoverRadius:4};})},
+ options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+   plugins:{legend:{position:"bottom",labels:{padding:9}},
+     tooltip:{callbacks:{footer:function(it){return it[0].label==2026?"2026 year-to-date":"";}}}},
+   scales:{y:{beginAtZero:true,grid:{color:"#eef2fa"},title:{display:true,text:"designations added"}},
+     x:{grid:{display:false}}}}
+});
+
+// 2. Coverage by list count -----------------------------------------------
+new Chart(document.getElementById("cListCount"),{
+ type:"doughnut",
+ data:{labels:["1 list (single-source)","2 lists","3 lists","4 lists"],
+   datasets:[{data:[18743,3150,1640,650],
+     backgroundColor:[DANGER,WARN,ACC2,OK],borderColor:"#fff",borderWidth:2}]},
+ options:{maintainAspectRatio:false,cutout:"58%",
+   plugins:{legend:{position:"bottom",labels:{padding:8}},
+     tooltip:{callbacks:{label:function(c){return c.label+": "+f0(c.parsed)+" ("+(c.parsed/24183*100).toFixed(1)+"%)";}}}}}
+});
+
+// 3. Regime size -----------------------------------------------------------
+new Chart(document.getElementById("cRegime"),{
+ type:"bar",
+ data:{labels:["OFAC SDN","UK Sanctions List","EU FSF","UN SC Consolidated"],
+   datasets:[{data:[19678,5986,5900,999],backgroundColor:[ACC,ACC2,ACC2,"#9bb4ee"],borderRadius:4}]},
+ options:{indexAxis:"y",maintainAspectRatio:false,
+   plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return f0(c.parsed.x)+" targets";}}}},
+   scales:{x:{grid:{color:"#eef2fa"},ticks:{callback:f0}},y:{grid:{display:false}}}}
+});
+
+// 4. Single-list miss profile ---------------------------------------------
+new Chart(document.getElementById("cMiss"),{
+ type:"bar",
+ data:{labels:["OFAC SDN only","UK list only","EU FSF only","UN SC only"],
+   datasets:[{data:[18.6,75.2,75.6,95.9],backgroundColor:[OK,WARN,WARN,DANGER],borderRadius:4}]},
+ options:{indexAxis:"y",maintainAspectRatio:false,
+   plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return "misses "+c.parsed.x+"% of universe";}}}},
+   scales:{x:{grid:{color:"#eef2fa"},max:100,ticks:{callback:function(v){return v+"%";}}},y:{grid:{display:false}}}}
+});
+
+// 5. Growth index ----------------------------------------------------------
+new Chart(document.getElementById("cGrowth"),{
+ type:"bar",
+ data:{labels:["Cyber","Narcotics / TCO","Human rights","Russia / Ukraine","Counter-terror","Iran / DPRK","Other regional"],
+   datasets:[{data:[244,203,105,85,70,61,50],
+     backgroundColor:[DANGER,DANGER,WARN,ACC,ACC2,ACC2,"#aab4cc"],borderRadius:4}]},
+ options:{indexAxis:"y",maintainAspectRatio:false,
+   plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return "index "+c.parsed.x+" (2022=100)";}}}},
+   scales:{x:{grid:{color:"#eef2fa"}},y:{grid:{display:false}}}}
+});
+
+// 6. Data-quality breakdown -----------------------------------------------
+new Chart(document.getElementById("cDQ"),{
+ type:"bar",
+ data:{labels:["Cross-source conflict","Name / translit. risk","Missing / partial DOB","Mononym","Stale (refresh lag)"],
+   datasets:[{data:[5.1,3.3,2.8,1.0,0.4],
+     backgroundColor:[DANGER,WARN,WARN,ACC2,"#aab4cc"],borderRadius:4}]},
+ options:{indexAxis:"y",maintainAspectRatio:false,
+   plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.parsed.x+"% of targets";}}}},
+   scales:{x:{grid:{color:"#eef2fa"},ticks:{callback:function(v){return v+"%";}}},y:{grid:{display:false}}}}
+});
+
+// 7. Top jurisdictions -----------------------------------------------------
+new Chart(document.getElementById("cCountry"),{
+ type:"bar",
+ data:{labels:["Russia","Iran","Ukraine","Syria","China","North Korea","Belarus","Afghanistan","Libya","Venezuela"],
+   datasets:[{data:[7300,2229,1307,1303,1259,968,946,803,793,790],backgroundColor:ACC,borderRadius:3}]},
+ options:{indexAxis:"y",maintainAspectRatio:false,
+   plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return f0(c.parsed.x)+" targets";}}}},
+   scales:{x:{grid:{color:"#eef2fa"},ticks:{callback:f0}},y:{grid:{display:false}}}}
+});
+
+// 8. Entity-type mix -------------------------------------------------------
+new Chart(document.getElementById("cSchema"),{
+ type:"doughnut",
+ data:{labels:["Person","Organization","Vessel","Crypto wallet","Aircraft","Security"],
+   datasets:[{data:[12072,9573,1507,702,322,7],
+     backgroundColor:[ACC,ACC2,OK,WARN,"#7a5cc0","#aab4cc"],borderColor:"#fff",borderWidth:2}]},
+ options:{maintainAspectRatio:false,cutout:"58%",
+   plugins:{legend:{position:"right",labels:{padding:8}},
+     tooltip:{callbacks:{label:function(c){return c.label+": "+f0(c.parsed);}}}}}
+});
+
+// Regime register table ----------------------------------------------------
+new gridjs.Grid({
+ columns:["Regime","Issuer",
+   {name:"Targets",formatter:function(c){return f0(c);}},
+   {name:"Persons",formatter:function(c){return f0(c);}},
+   "Countries","Programmes","Cadence","Last change","Version"],
+ data:[
+  ["OFAC SDN","US Treasury / OFAC",19678,7449,190,34,"2-hourly","11 May 2026","20260517021001-nwr"],
+  ["UK Sanctions List","UK FCDO / OFSI",5986,3844,140,31,"2-hourly","18 Mar 2026","20260319084002-ilx"],
+  ["EU FSF","EU Commission / DG FISMA",5900,4357,114,41,"2-hourly","15 May 2026","20260523145701-mgw"],
+  ["UN SC Consolidated","UN Security Council",999,732,76,14,"4-hourly","31 Mar 2026","20260413040101-mte"]
+ ],
+ sort:true,
+ style:{table:{"white-space":"nowrap"}}
+}).render(document.getElementById("regimeTable"));
+</script>
+</body>
+</html>
